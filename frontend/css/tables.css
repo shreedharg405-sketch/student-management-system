@@ -1,0 +1,234 @@
+/* ==========================================================================
+   STUDENT MANAGEMENT SYSTEM - DIRECTORY TABLES, SEARCH & PAGINATIONS
+   Modern High-Contrast SaaS Aesthetic (Slate & Indigo Palette)
+   ========================================================================== */
+
+/* 1. Table Card & Container */
+.table-card {
+    background-color: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+.table-header-controls {
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    background-color: var(--bg-secondary);
+}
+
+.search-filter-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    max-width: 580px;
+}
+
+.input-wrapper.search-inline {
+    position: relative;
+    flex: 1;
+}
+
+.search-inline input {
+    width: 100%;
+    padding: 9px 16px 9px 40px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    font-size: 13.5px;
+    outline: none;
+    transition: all var(--transition-fast);
+}
+
+.search-inline input:focus {
+    border-color: var(--accent-color);
+    background-color: var(--bg-secondary);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.search-inline-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-light);
+    font-size: 14px;
+    pointer-events: none;
+}
+
+.filter-dropdown {
+    padding: 9px 14px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    font-size: 13.5px;
+    outline: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all var(--transition-fast);
+}
+
+.filter-dropdown:focus {
+    border-color: var(--accent-color);
+}
+
+.table-container,
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    background-color: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+}
+
+/* 2. Responsive & Modern Data Table System */
+.table,
+.data-table,
+.modern-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    text-align: left;
+    font-size: 13.5px;
+}
+
+.table thead,
+.data-table thead,
+.modern-table thead {
+    background-color: var(--bg-tertiary);
+}
+
+.table th,
+.data-table th,
+.modern-table th {
+    padding: 13px 18px;
+    background-color: var(--bg-tertiary);
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border-bottom: 1px solid var(--border-color);
+    white-space: nowrap;
+}
+
+.table th:first-child,
+.data-table th:first-child,
+.modern-table th:first-child {
+    border-top-left-radius: var(--radius-sm);
+}
+
+.table th:last-child,
+.data-table th:last-child,
+.modern-table th:last-child {
+    border-top-right-radius: var(--radius-sm);
+}
+
+.table td,
+.data-table td,
+.modern-table td {
+    padding: 13px 18px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-primary);
+    vertical-align: middle;
+    transition: background-color var(--transition-fast);
+}
+
+.table tbody tr:hover td,
+.data-table tbody tr:hover td,
+.modern-table tbody tr:hover td {
+    background-color: rgba(255, 255, 255, 0.025);
+}
+
+.table tbody tr:last-child td,
+.data-table tbody tr:last-child td,
+.modern-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Specific cell highlights */
+.data-table strong,
+.modern-table strong {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+/* Table empty state */
+.table-empty-state {
+    padding: 48px 20px;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+.table-empty-state i {
+    font-size: 32px;
+    color: var(--text-light);
+    margin-bottom: 12px;
+    display: block;
+}
+
+/* 3. Pagination Controls */
+.table-pagination {
+    padding: 16px 24px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    background-color: var(--bg-secondary);
+}
+
+.pagination-info {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.pagination-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-sm);
+    background-color: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all var(--transition-fast);
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background-color: var(--accent-color);
+    color: #ffffff;
+    border-color: var(--accent-color);
+}
+
+.pagination-btn.active {
+    background-color: var(--accent-color);
+    color: #ffffff;
+    border-color: var(--accent-color);
+    box-shadow: 0 2px 6px var(--accent-glow);
+}
+
+.pagination-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}

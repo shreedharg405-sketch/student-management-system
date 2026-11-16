@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Schedule - Student Management System</title>
+    <!-- Google Fonts & Font Awesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Preserved Stylesheets -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/tables.css">
+    <link rel="stylesheet" href="../css/forms.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="app-sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <span>STUDENTMS</span>
+                </div>
+            </div>
+
+            <div class="sidebar-user-card" style="padding: 16px 20px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px;">
+                <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #6366f1, #a855f7); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 16px;">
+                    <i class="fa-solid fa-user-graduate"></i>
+                </div>
+                <div style="overflow: hidden;">
+                    <div class="js-user-name" style="font-weight: 700; font-size: 14px; color: var(--text-primary); white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">Loading...</div>
+                    <div class="js-user-role" style="font-size: 11px; color: var(--accent-color); font-weight: 600; text-transform: uppercase;">STUDENT</div>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section-title">ACADEMIC MENU</div>
+                <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+                <a href="profile.html" class="nav-item"><i class="fa-solid fa-id-card"></i> My Profile</a>
+                <a href="attendance.html" class="nav-item"><i class="fa-solid fa-chart-pie"></i> Attendance</a>
+                <a href="timetable.html" class="nav-item"><i class="fa-solid fa-calendar-week"></i> Timetable</a>
+                <a href="exams.html" class="nav-item active"><i class="fa-solid fa-file-pen"></i> Exam Schedule</a>
+
+                <div class="nav-section-title">LEAVE & REQUESTS</div>
+                <a href="leave.html" class="nav-item"><i class="fa-solid fa-paper-plane"></i> Apply Leave</a>
+                <a href="leaves.html" class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i> Leave History</a>
+
+                <div class="nav-section-title">SESSION</div>
+                <a href="javascript:void(0)" onclick="logout()" class="nav-item text-danger"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Header Bar -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="btn-icon" id="menu-toggle-btn"><i class="fa-solid fa-bars"></i></button>
+                    <h1 class="page-title">Examination Schedule</h1>
+                </div>
+                <div class="topbar-right">
+                    <span style="font-size: 12px; color: var(--text-secondary); background: var(--bg-tertiary); padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border-color);">
+                        <i class="fa-solid fa-circle-check" style="color: #10b981;"></i> Published Internal & Semester Exams
+                    </span>
+                    <button class="btn-icon" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button>
+                    <button class="btn btn-outline btn-sm" onclick="logout()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</button>
+                </div>
+            </header>
+
+            <div class="content-body">
+                <!-- Exam Instructions Box -->
+                <div class="card" style="padding: 18px 24px; margin-bottom: 24px; border-left: 4px solid var(--accent-color); background: rgba(99, 102, 241, 0.08);">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+                        <i class="fa-solid fa-circle-info" style="color: var(--accent-color); font-size: 18px;"></i>
+                        <h4 style="margin: 0; font-size: 15px; font-weight: 700; color: var(--text-primary);">Examination Hall Instructions</h4>
+                    </div>
+                    <p style="margin: 0; font-size: 13px; color: var(--text-secondary); line-height: 1.5;">
+                        Candidates must carry their valid student ID cards and hall tickets. Entry into exam halls closes 10 minutes prior to the start time. Electronic devices, smartwatches, and programmable calculators are strictly prohibited.
+                    </p>
+                </div>
+
+                <!-- Exams Table -->
+                <div class="card" style="padding: 24px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+                        <h3 style="font-size: 16px; font-weight: 700; margin: 0; color: var(--text-primary);"><i class="fa-solid fa-calendar-check" style="color: var(--accent-color); margin-right: 8px;"></i>Upcoming Examinations</h3>
+                        <span id="exam-count-badge" class="badge badge-success">0 Scheduled</span>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Exam Name</th>
+                                    <th>Type</th>
+                                    <th>Subject Code</th>
+                                    <th>Subject Name</th>
+                                    <th>Date</th>
+                                    <th>Timing</th>
+                                    <th>Hall / Room</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbl-student-exams">
+                                <tr><td colspan="7" style="text-align: center; color: var(--text-secondary);">Loading exam schedules...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/config.js"></script>
+    <script>
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme') || 'dark';
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('sms-theme', next);
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const session = await checkSession('STUDENT');
+            if (!session) return;
+
+            try {
+                const res = await apiCall('student/exams.php');
+                const tbody = document.getElementById('tbl-student-exams');
+                tbody.innerHTML = '';
+
+                if (res.success && res.data && res.data.length > 0) {
+                    document.getElementById('exam-count-badge').textContent = `${res.data.length} Scheduled`;
+                    res.data.forEach(ex => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td><strong>${ex.exam_name}</strong></td>
+                            <td><span class="badge" style="background: rgba(99, 102, 241, 0.2); color: #818cf8;">${ex.exam_type}</span></td>
+                            <td><strong>${ex.subject_code}</strong></td>
+                            <td>${ex.subject_name}</td>
+                            <td><strong style="color: var(--text-primary);"><i class="fa-regular fa-calendar"></i> ${ex.date}</strong></td>
+                            <td>${ex.start_time} - ${ex.end_time}</td>
+                            <td><span class="badge" style="background: var(--bg-tertiary); color: var(--text-primary); font-weight: 700;"><i class="fa-solid fa-location-dot"></i> ${ex.room}</span></td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                } else {
+                    document.getElementById('exam-count-badge').textContent = '0 Scheduled';
+                    tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-secondary);">No exams currently scheduled.</td></tr>`;
+                }
+            } catch (err) {
+                console.error("Exams load failed:", err);
+            }
+        });
+    </script>
+</body>
+</html>

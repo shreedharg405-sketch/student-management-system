@@ -1,0 +1,141 @@
+/* ==========================================================================
+   STUDENT MANAGEMENT SYSTEM - RESPONSIVE LAYOUTS & BREAKPOINTS (css/responsive.css)
+   ========================================================================== */
+
+/* 1. Large Desktop / Tablet Adjustments */
+@media (max-width: 1200px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 16px;
+    }
+    
+    .dashboard-details,
+    div[style*="grid-template-columns: 2fr 1fr"] {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .form-grid {
+        gap: 16px 20px;
+    }
+}
+
+/* 2. Medium Tablet Screen Breakpoint */
+@media (max-width: 1024px) {
+    .sidebar {
+        transform: translateX(-280px);
+        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4);
+    }
+    
+    .sidebar.active {
+        transform: translateX(0);
+    }
+    
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+        padding: 24px;
+    }
+    
+    /* Toggle menu display in header */
+    #menu-toggle-btn, .menu-toggle {
+        display: inline-flex !important;
+    }
+    
+    .app-header, .topbar {
+        gap: 14px;
+    }
+}
+
+/* 3. Small Mobile Screen Breakpoint */
+@media (max-width: 768px) {
+    .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+    }
+
+    .topbar-right {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .page-title {
+        font-size: 20px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-group.full-width {
+        grid-column: span 1;
+    }
+    
+    .floating-group {
+        grid-column: span 1 !important;
+    }
+    
+    .welcome-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        padding: 20px;
+    }
+    
+    .welcome-decor {
+        display: none;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .table-header-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .search-filter-box {
+        flex-direction: column;
+        max-width: 100%;
+    }
+    
+    .filter-dropdown {
+        width: 100%;
+    }
+    
+    .user-profile-widget {
+        padding: 4px;
+    }
+    
+    .user-details-desktop {
+        display: none; /* Hide textual labels on narrow mobile */
+    }
+}
+
+/* 4. Extra Small Screens */
+@media (max-width: 480px) {
+    .main-content {
+        padding: 16px;
+    }
+    
+    .page-title, .app-header h1 {
+        font-size: 18px;
+    }
+    
+    .header-subtitle {
+        font-size: 11px;
+    }
+    
+    .btn-action {
+        padding: 4px 8px;
+        font-size: 11px;
+    }
+    
+    .toast, .sms-toast {
+        min-width: calc(100vw - 32px);
+        left: 16px;
+        right: 16px;
+        bottom: 16px;
+    }
+}

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Student Management System</title>
+    <!-- Google Fonts & Font Awesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Preserved Stylesheets -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/tables.css">
+    <link rel="stylesheet" href="../css/forms.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <style>
+        .profile-field-box {
+            background-color: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+        }
+        .profile-field-box label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            display: block;
+            margin-bottom: 4px;
+        }
+        .profile-field-box span {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="app-sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <span>STUDENTMS</span>
+                </div>
+            </div>
+
+            <div class="sidebar-user-card" style="padding: 16px 20px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px;">
+                <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #6366f1, #a855f7); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 16px;">
+                    <i class="fa-solid fa-user-graduate"></i>
+                </div>
+                <div style="overflow: hidden;">
+                    <div class="js-user-name" style="font-weight: 700; font-size: 14px; color: var(--text-primary); white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">Loading...</div>
+                    <div class="js-user-role" style="font-size: 11px; color: var(--accent-color); font-weight: 600; text-transform: uppercase;">STUDENT</div>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section-title">ACADEMIC MENU</div>
+                <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+                <a href="profile.html" class="nav-item active"><i class="fa-solid fa-id-card"></i> My Profile</a>
+                <a href="attendance.html" class="nav-item"><i class="fa-solid fa-chart-pie"></i> Attendance</a>
+                <a href="timetable.html" class="nav-item"><i class="fa-solid fa-calendar-week"></i> Timetable</a>
+                <a href="exams.html" class="nav-item"><i class="fa-solid fa-file-pen"></i> Exam Schedule</a>
+
+                <div class="nav-section-title">LEAVE & REQUESTS</div>
+                <a href="leave.html" class="nav-item"><i class="fa-solid fa-paper-plane"></i> Apply Leave</a>
+                <a href="leaves.html" class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i> Leave History</a>
+
+                <div class="nav-section-title">SESSION</div>
+                <a href="javascript:void(0)" onclick="logout()" class="nav-item text-danger"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Header Bar -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="btn-icon" id="menu-toggle-btn"><i class="fa-solid fa-bars"></i></button>
+                    <h1 class="page-title">My Profile</h1>
+                </div>
+                <div class="topbar-right">
+                    <button class="btn-icon" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button>
+                    <button class="btn btn-outline btn-sm" onclick="logout()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</button>
+                </div>
+            </header>
+
+            <div class="content-body">
+                <!-- Profile Header Banner -->
+                <div class="card" style="padding: 24px; margin-bottom: 22px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px;">
+                    <div style="display: flex; align-items: center; gap: 18px;">
+                        <div style="width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg, #6366f1, #a855f7); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 32px; font-weight: 800; border: 3px solid rgba(255,255,255,0.15);">
+                            <i class="fa-solid fa-user-graduate"></i>
+                        </div>
+                        <div>
+                            <h2 style="font-size: 22px; font-weight: 800; color: var(--text-primary); margin: 0 0 6px 0;" id="prof-full-name">--</h2>
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                                <span class="badge badge-success" id="prof-reg-badge">21EC001</span>
+                                <span class="badge" style="background: rgba(99, 102, 241, 0.2); color: #818cf8;" id="prof-dept-badge">ECE Department</span>
+                                <span class="badge" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24;" id="prof-batch-badge">Batch 1</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <span style="font-size: 12px; color: var(--text-secondary); background: var(--bg-tertiary); padding: 8px 14px; border-radius: 20px; border: 1px solid var(--border-color); display: inline-flex; align-items: center; gap: 6px;">
+                            <i class="fa-solid fa-lock" style="color: var(--accent-color);"></i> Academic Information (Read-Only)
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Profile Grid -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 22px;">
+                    <!-- Academic Details -->
+                    <div class="card" style="padding: 24px;">
+                        <h3 style="font-size: 16px; font-weight: 700; margin: 0 0 18px 0; color: var(--text-primary); display: flex; align-items: center; gap: 10px;">
+                            <i class="fa-solid fa-graduation-cap" style="color: var(--accent-color);"></i> Academic Information
+                        </h3>
+                        <div style="display: flex; flex-direction: column; gap: 14px;">
+                            <div class="profile-field-box">
+                                <label>Registration Number</label>
+                                <span id="p-reg-no">--</span>
+                            </div>
+                            <div class="profile-field-box">
+                                <label>Department</label>
+                                <span id="p-dept">--</span>
+                            </div>
+                            <div class="profile-field-box">
+                                <label>Degree & Course</label>
+                                <span id="p-course">--</span>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                                <div class="profile-field-box">
+                                    <label>Academic Year</label>
+                                    <span id="p-year">--</span>
+                                </div>
+                                <div class="profile-field-box">
+                                    <label>Section & Batch</label>
+                                    <span id="p-sec-batch">--</span>
+                                </div>
+                            </div>
+                            <div class="profile-field-box">
+                                <label>Enrollment Status</label>
+                                <span id="p-status" style="color: #10b981;">Active</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Personal & Mentorship Details -->
+                    <div class="card" style="padding: 24px;">
+                        <h3 style="font-size: 16px; font-weight: 700; margin: 0 0 18px 0; color: var(--text-primary); display: flex; align-items: center; gap: 10px;">
+                            <i class="fa-solid fa-address-book" style="color: var(--accent-color);"></i> Personal & Faculty Mentorship
+                        </h3>
+                        <div style="display: flex; flex-direction: column; gap: 14px;">
+                            <div class="profile-field-box">
+                                <label>Registered Email</label>
+                                <span id="p-email">--</span>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                                <div class="profile-field-box">
+                                    <label>Contact Phone</label>
+                                    <span id="p-phone">--</span>
+                                </div>
+                                <div class="profile-field-box">
+                                    <label>Gender / DOB</label>
+                                    <span id="p-gender-dob">--</span>
+                                </div>
+                            </div>
+                            <div class="profile-field-box">
+                                <label>Residential Address</label>
+                                <span id="p-address">--</span>
+                            </div>
+                            <div class="profile-field-box">
+                                <label>Assigned Academic Mentor</label>
+                                <span id="p-mentor">--</span>
+                            </div>
+                            <div class="profile-field-box">
+                                <label>Head of Department (HOD)</label>
+                                <span id="p-hod">--</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/config.js"></script>
+    <script>
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme') || 'dark';
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('sms-theme', next);
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const session = await checkSession('STUDENT');
+            if (!session) return;
+
+            try {
+                const res = await apiCall('student/profile.php');
+                if (res.success && res.data) {
+                    const d = res.data;
+                    document.getElementById('prof-full-name').textContent = d.student_name;
+                    document.getElementById('prof-reg-badge').textContent = d.register_number;
+                    document.getElementById('prof-dept-badge').textContent = d.department_code;
+                    document.getElementById('prof-batch-badge').textContent = d.batch_name || 'Batch 1';
+
+                    document.getElementById('p-reg-no').textContent = d.register_number;
+                    document.getElementById('p-dept').textContent = `${d.department_name} (${d.department_code})`;
+                    document.getElementById('p-course').textContent = d.course_name || 'B.Tech in ECE';
+                    document.getElementById('p-year').textContent = d.year;
+                    document.getElementById('p-sec-batch').textContent = `Sec ${d.section} &bull; ${d.batch_name || 'Batch 1'}`;
+                    document.getElementById('p-status').textContent = d.status || 'Active';
+
+                    document.getElementById('p-email').textContent = d.student_email;
+                    document.getElementById('p-phone').textContent = d.phone || '+91 91234 56780';
+                    document.getElementById('p-gender-dob').textContent = `${d.gender} &bull; ${d.dob}`;
+                    document.getElementById('p-address').textContent = d.address || 'Chennai, Tamil Nadu';
+                    document.getElementById('p-mentor').textContent = `${d.mentor_name} (${d.mentor_email || ''})`;
+                    document.getElementById('p-hod').textContent = `${d.hod_name} (${d.hod_email || ''})`;
+                }
+            } catch (err) {
+                console.error("Profile load failed:", err);
+            }
+        });
+    </script>
+</body>
+</html>

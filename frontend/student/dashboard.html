@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - Student Management System</title>
+    <!-- Google Fonts & Font Awesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Preserved Stylesheets -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/tables.css">
+    <link rel="stylesheet" href="../css/forms.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="app-sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <span>STUDENTMS</span>
+                </div>
+            </div>
+
+            <div class="sidebar-user-card" style="padding: 16px 20px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px;">
+                <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #6366f1, #a855f7); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 16px;">
+                    <i class="fa-solid fa-user-graduate"></i>
+                </div>
+                <div style="overflow: hidden;">
+                    <div class="js-user-name" style="font-weight: 700; font-size: 14px; color: var(--text-primary); white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">Loading...</div>
+                    <div class="js-user-role" style="font-size: 11px; color: var(--accent-color); font-weight: 600; text-transform: uppercase;">STUDENT</div>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section-title">ACADEMIC MENU</div>
+                <a href="dashboard.html" class="nav-item active"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+                <a href="profile.html" class="nav-item"><i class="fa-solid fa-id-card"></i> My Profile</a>
+                <a href="attendance.html" class="nav-item"><i class="fa-solid fa-chart-pie"></i> Attendance</a>
+                <a href="timetable.html" class="nav-item"><i class="fa-solid fa-calendar-week"></i> Timetable</a>
+                <a href="exams.html" class="nav-item"><i class="fa-solid fa-file-pen"></i> Exam Schedule</a>
+
+                <div class="nav-section-title">LEAVE & REQUESTS</div>
+                <a href="leave.html" class="nav-item"><i class="fa-solid fa-paper-plane"></i> Apply Leave</a>
+                <a href="leaves.html" class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i> Leave History</a>
+
+                <div class="nav-section-title">SESSION</div>
+                <a href="javascript:void(0)" onclick="logout()" class="nav-item text-danger"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Header Bar -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="btn-icon" id="menu-toggle-btn" aria-label="Toggle Menu"><i class="fa-solid fa-bars"></i></button>
+                    <h1 class="page-title">Student Dashboard</h1>
+                </div>
+                <div class="topbar-right">
+                    <span id="header-reg-pill">
+                        <i class="fa-solid fa-id-badge"></i> <span id="header-reg-no">...</span>
+                    </span>
+                    <button class="btn-icon" id="header-theme-toggle" onclick="toggleTheme()" title="Toggle Theme"><i class="fa-solid fa-moon"></i></button>
+                    <button class="btn btn-outline btn-sm" onclick="logout()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</button>
+                </div>
+            </header>
+
+            <div class="content-body">
+                <!-- Welcome Banner -->
+                <div class="welcome-card">
+                    <div>
+                        <h2>Welcome, <span class="js-user-name">Student</span>! 👋</h2>
+                        <p id="welcome-subtext">Access your academic records, attendance stats, timetable, and leave approvals.</p>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <a href="attendance.html" class="btn btn-secondary btn-sm"><i class="fa-solid fa-chart-line"></i> Attendance</a>
+                        <a href="leave.html" class="btn btn-primary btn-sm"><i class="fa-solid fa-plus"></i> Apply Leave</a>
+                    </div>
+                </div>
+
+                <!-- KPI Metric Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Overall Attendance</span>
+                            <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: #10b981;"><i class="fa-solid fa-user-check"></i></div>
+                        </div>
+                        <div class="stat-value" id="kpi-attendance-pct">--%</div>
+                        <div class="stat-subtitle" id="kpi-attendance-status" style="color: #10b981; font-weight: 600;">Calculating...</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Assigned Batch</span>
+                            <div class="stat-icon" style="background: rgba(99, 102, 241, 0.15); color: #6366f1;"><i class="fa-solid fa-users-rectangle"></i></div>
+                        </div>
+                        <div class="stat-value" id="kpi-batch-name" style="font-size: 20px;">--</div>
+                        <div class="stat-subtitle" id="kpi-dept-name">ECE Department</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Upcoming Exams</span>
+                            <div class="stat-icon" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;"><i class="fa-solid fa-calendar-check"></i></div>
+                        </div>
+                        <div class="stat-value" id="kpi-exam-count">0</div>
+                        <div class="stat-subtitle" id="kpi-exam-date">Next Exam Scheduled</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Leave History</span>
+                            <div class="stat-icon" style="background: rgba(236, 72, 153, 0.15); color: #ec4899;"><i class="fa-solid fa-receipt"></i></div>
+                        </div>
+                        <div class="stat-value" id="kpi-leave-count">0</div>
+                        <div class="stat-subtitle" id="kpi-leave-status">Recent applications</div>
+                    </div>
+                </div>
+
+                <!-- 2-Column Content Grid -->
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 22px;">
+                    <!-- Left: Subject-wise Quick Attendance & Today's Schedule -->
+                    <div style="display: flex; flex-direction: column; gap: 22px;">
+                        <div class="card" style="padding: 22px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                                <h3 style="font-size: 16px; font-weight: 700; margin: 0; color: var(--text-primary);"><i class="fa-solid fa-book-open" style="color: var(--accent-color); margin-right: 8px;"></i>Subject Attendance Summary</h3>
+                                <a href="attendance.html" style="font-size: 12px; font-weight: 600; color: var(--accent-color);">View Details &rarr;</a>
+                            </div>
+                            <div class="table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Subject</th>
+                                            <th>Total</th>
+                                            <th>Attended</th>
+                                            <th>Percentage</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbl-dash-attendance">
+                                        <tr><td colspan="5" style="text-align: center; color: var(--text-secondary);">Loading attendance records...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Today's Classes -->
+                        <div class="card" style="padding: 22px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                                <h3 style="font-size: 16px; font-weight: 700; margin: 0; color: var(--text-primary);"><i class="fa-solid fa-clock" style="color: var(--accent-color); margin-right: 8px;"></i>Weekly Schedule Overview</h3>
+                                <a href="timetable.html" style="font-size: 12px; font-weight: 600; color: var(--accent-color);">Full Timetable &rarr;</a>
+                            </div>
+                            <div id="dash-schedule-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;">
+                                <div style="color: var(--text-secondary); font-size: 13px;">Loading timetable...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Mentor Card & Notices -->
+                    <div style="display: flex; flex-direction: column; gap: 22px;">
+                        <!-- Assigned Mentor Card -->
+                        <div class="card" style="padding: 22px;">
+                            <h3 style="font-size: 15px; font-weight: 700; margin: 0 0 14px 0; color: var(--text-primary);"><i class="fa-solid fa-user-tie" style="color: var(--accent-color); margin-right: 8px;"></i>Assigned Academic Mentor</h3>
+                            <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 14px;">
+                                <div style="width: 48px; height: 48px; border-radius: 50%; background: rgba(99, 102, 241, 0.2); color: #818cf8; display: flex; align-items: center; justify-content: center; font-size: 20px;">
+                                    <i class="fa-solid fa-chalkboard-user"></i>
+                                </div>
+                                <div>
+                                    <div id="dash-mentor-name" style="font-weight: 700; font-size: 15px; color: var(--text-primary);">--</div>
+                                    <div style="font-size: 12px; color: var(--text-secondary);">Faculty Advisor</div>
+                                </div>
+                            </div>
+                            <div style="font-size: 12px; color: var(--text-secondary); line-height: 1.6;">
+                                <div><i class="fa-solid fa-envelope" style="width: 18px;"></i> <span id="dash-mentor-email">--</span></div>
+                                <div><i class="fa-solid fa-phone" style="width: 18px;"></i> <span id="dash-mentor-phone">--</span></div>
+                            </div>
+                        </div>
+
+                        <!-- Department Notices -->
+                        <div class="card" style="padding: 22px;">
+                            <h3 style="font-size: 15px; font-weight: 700; margin: 0 0 14px 0; color: var(--text-primary);"><i class="fa-solid fa-bullhorn" style="color: var(--accent-color); margin-right: 8px;"></i>Notice Board</h3>
+                            <div id="dash-notices-list" style="display: flex; flex-direction: column; gap: 12px;">
+                                <div style="color: var(--text-secondary); font-size: 13px;">Loading notices...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Configuration & Scripts -->
+    <script src="../js/config.js"></script>
+    <script>
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme') || 'dark';
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('sms-theme', next);
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const session = await checkSession('STUDENT');
+            if (!session) return;
+
+            loadDashboardData();
+        });
+
+        async function loadDashboardData() {
+            try {
+                // 1. Profile
+                const profRes = await apiCall('student/profile.php');
+                if (profRes.success && profRes.data) {
+                    const p = profRes.data;
+                    document.getElementById('header-reg-no').textContent = p.register_number;
+                    document.getElementById('kpi-batch-name').textContent = p.batch_name || `${p.year} Sec ${p.section}`;
+                    document.getElementById('kpi-dept-name').textContent = p.department_name;
+                    document.getElementById('dash-mentor-name').textContent = p.mentor_name || 'Prof. Sarah Jenkins';
+                    document.getElementById('dash-mentor-email').textContent = p.mentor_email || 'staff1@gmail.com';
+                    document.getElementById('dash-mentor-phone').textContent = p.mentor_phone || '+91 98765 43211';
+                }
+
+                // 2. Attendance Stats
+                const attRes = await apiCall('student/attendance.php');
+                if (attRes.success && attRes.data) {
+                    const ov = attRes.data.overall;
+                    document.getElementById('kpi-attendance-pct').textContent = `${ov.percentage}%`;
+                    document.getElementById('kpi-attendance-status').textContent = ov.eligibility;
+                    document.getElementById('kpi-attendance-status').style.color = ov.percentage >= 75 ? '#10b981' : '#ef4444';
+
+                    const tbody = document.getElementById('tbl-dash-attendance');
+                    tbody.innerHTML = '';
+                    (attRes.data.subjects || []).forEach(sub => {
+                        const tr = document.createElement('tr');
+                        const isGood = sub.percentage >= 75;
+                        const barColor = isGood ? '#10b981' : '#ef4444';
+                        tr.innerHTML = `
+                            <td><strong style="color: var(--accent-color);">${sub.subject_code}</strong> &bull; ${sub.subject_name}</td>
+                            <td>${sub.total_classes}</td>
+                            <td>${sub.attended}</td>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <span style="font-weight: 700; min-width: 42px;">${sub.percentage}%</span>
+                                    <div style="flex: 1; max-width: 80px; height: 6px; background: rgba(255, 255, 255, 0.08); border-radius: 9999px; overflow: hidden;">
+                                        <div style="width: ${Math.min(sub.percentage, 100)}%; height: 100%; background: ${barColor}; border-radius: 9999px;"></div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="badge badge-${sub.status_color}">${isGood ? 'Good' : 'Critical'}</span></td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+
+                // 3. Exams
+                const exRes = await apiCall('student/exams.php');
+                if (exRes.success && exRes.data) {
+                    document.getElementById('kpi-exam-count').textContent = exRes.data.length;
+                    if (exRes.data.length > 0) {
+                        document.getElementById('kpi-exam-date').textContent = `Next: ${exRes.data[0].date} (${exRes.data[0].subject_code})`;
+                    }
+                }
+
+                // 4. Leaves
+                const lvRes = await apiCall('student/leaves.php');
+                if (lvRes.success && lvRes.data) {
+                    document.getElementById('kpi-leave-count').textContent = lvRes.data.length;
+                    const pending = lvRes.data.filter(l => l.status && l.status.includes('PENDING')).length;
+                    document.getElementById('kpi-leave-status').textContent = `${pending} Pending Approval`;
+                }
+
+                // 5. Timetable preview
+                const ttRes = await apiCall('student/timetable.php');
+                if (ttRes.success && ttRes.data && ttRes.data.all_slots) {
+                    const container = document.getElementById('dash-schedule-container');
+                    container.innerHTML = '';
+                    const preview = ttRes.data.all_slots.slice(0, 4);
+                    preview.forEach(s => {
+                        const card = document.createElement('div');
+                        card.className = 'slot-card';
+                        card.innerHTML = `
+                            <div style="font-size: 11px; font-weight: 700; color: var(--accent-color); text-transform: uppercase;">${s.day} &bull; Period ${s.period}</div>
+                            <div style="font-weight: 700; font-size: 13.5px; color: var(--text-primary); margin: 4px 0;">${s.subject_code}</div>
+                            <div style="font-size: 11.5px; color: var(--text-secondary);">${s.start_time} - ${s.end_time} &bull; Room ${s.room}</div>
+                        `;
+                        container.appendChild(card);
+                    });
+                }
+
+                // Notices fallback
+                const noticesContainer = document.getElementById('dash-notices-list');
+                noticesContainer.innerHTML = `
+                    <div class="notice-item" style="border-left-color: var(--accent-color);">
+                        <div style="font-weight: 700; font-size: 13px; color: var(--text-primary);">Mid-Term Examination Schedule Released</div>
+                        <div style="font-size: 11.5px; color: var(--text-secondary); margin-top: 4px; line-height: 1.4;">Internal Assessment 1 schedules are now published. Check exam section.</div>
+                    </div>
+                    <div class="notice-item" style="border-left-color: #10b981;">
+                        <div style="font-weight: 700; font-size: 13px; color: var(--text-primary);">Industrial Visit Registration</div>
+                        <div style="font-size: 11.5px; color: var(--text-secondary); margin-top: 4px; line-height: 1.4;">Submit consent letters to faculty mentors before this Friday.</div>
+                    </div>
+                `;
+
+            } catch (err) {
+                console.error("Dashboard load failed:", err);
+            }
+        }
+    </script>
+</body>
+</html>

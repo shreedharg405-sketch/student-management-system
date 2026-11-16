@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Records - Student Management System</title>
+    <!-- Google Fonts & Font Awesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Preserved Stylesheets -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/tables.css">
+    <link rel="stylesheet" href="../css/forms.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="app-sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <span>STUDENTMS</span>
+                </div>
+            </div>
+
+            <div class="sidebar-user-card" style="padding: 16px 20px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px;">
+                <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #6366f1, #a855f7); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 16px;">
+                    <i class="fa-solid fa-user-graduate"></i>
+                </div>
+                <div style="overflow: hidden;">
+                    <div class="js-user-name" style="font-weight: 700; font-size: 14px; color: var(--text-primary); white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">Loading...</div>
+                    <div class="js-user-role" style="font-size: 11px; color: var(--accent-color); font-weight: 600; text-transform: uppercase;">STUDENT</div>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section-title">ACADEMIC MENU</div>
+                <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+                <a href="profile.html" class="nav-item"><i class="fa-solid fa-id-card"></i> My Profile</a>
+                <a href="attendance.html" class="nav-item active"><i class="fa-solid fa-chart-pie"></i> Attendance</a>
+                <a href="timetable.html" class="nav-item"><i class="fa-solid fa-calendar-week"></i> Timetable</a>
+                <a href="exams.html" class="nav-item"><i class="fa-solid fa-file-pen"></i> Exam Schedule</a>
+
+                <div class="nav-section-title">LEAVE & REQUESTS</div>
+                <a href="leave.html" class="nav-item"><i class="fa-solid fa-paper-plane"></i> Apply Leave</a>
+                <a href="leaves.html" class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i> Leave History</a>
+
+                <div class="nav-section-title">SESSION</div>
+                <a href="javascript:void(0)" onclick="logout()" class="nav-item text-danger"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Header Bar -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="btn-icon" id="menu-toggle-btn"><i class="fa-solid fa-bars"></i></button>
+                    <h1 class="page-title">Attendance Analytics</h1>
+                </div>
+                <div class="topbar-right">
+                    <span style="font-size: 12px; color: var(--text-secondary); background: var(--bg-tertiary); padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border-color);">
+                        <i class="fa-solid fa-shield-halved" style="color: #10b981;"></i> Read-Only Academic Record
+                    </span>
+                    <button class="btn-icon" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button>
+                    <button class="btn btn-outline btn-sm" onclick="logout()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</button>
+                </div>
+            </header>
+
+            <div class="content-body">
+                <!-- Summary KPI Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Overall Percentage</span>
+                            <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: #10b981;"><i class="fa-solid fa-percent"></i></div>
+                        </div>
+                        <div class="stat-value" id="att-ov-pct">--%</div>
+                        <div class="stat-subtitle" id="att-ov-eligibility" style="color: #10b981; font-weight: 700;">Evaluating...</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Total Hours Conducted</span>
+                            <div class="stat-icon" style="background: rgba(99, 102, 241, 0.15); color: #6366f1;"><i class="fa-solid fa-business-time"></i></div>
+                        </div>
+                        <div class="stat-value" id="att-ov-total">0</div>
+                        <div class="stat-subtitle">All enrolled subjects</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Attended Hours</span>
+                            <div class="stat-icon" style="background: rgba(14, 165, 233, 0.15); color: #0ea5e9;"><i class="fa-solid fa-circle-check"></i></div>
+                        </div>
+                        <div class="stat-value" id="att-ov-attended" style="color: #0ea5e9;">0</div>
+                        <div class="stat-subtitle">Present in lecture</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Absent Hours</span>
+                            <div class="stat-icon" style="background: rgba(239, 68, 68, 0.15); color: #ef4444;"><i class="fa-solid fa-circle-xmark"></i></div>
+                        </div>
+                        <div class="stat-value" id="att-ov-absent" style="color: #ef4444;">0</div>
+                        <div class="stat-subtitle">Recorded absences</div>
+                    </div>
+                </div>
+
+                <!-- Subject-Wise Attendance Breakdown Table -->
+                <div class="card" style="padding: 24px; margin-bottom: 24px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 10px;">
+                        <h3 style="font-size: 16px; font-weight: 700; margin: 0; color: var(--text-primary);"><i class="fa-solid fa-list-check" style="color: var(--accent-color); margin-right: 8px;"></i>Subject-Wise Attendance Breakdown</h3>
+                        <span style="font-size: 12px; color: var(--text-secondary);"><i class="fa-solid fa-circle-info"></i> Minimum 75% required for exam eligibility</span>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Subject Code</th>
+                                    <th>Subject Name</th>
+                                    <th>Conducted</th>
+                                    <th>Attended</th>
+                                    <th>Absent</th>
+                                    <th>Percentage</th>
+                                    <th>Progress Bar</th>
+                                    <th>Eligibility</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbl-subject-attendance">
+                                <tr><td colspan="8" style="text-align: center; color: var(--text-secondary);">Loading subjects attendance data...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Period-Wise Attendance History -->
+                <div class="card" style="padding: 24px;">
+                    <h3 style="font-size: 16px; font-weight: 700; margin: 0 0 18px 0; color: var(--text-primary);"><i class="fa-solid fa-clock-rotate-left" style="color: var(--accent-color); margin-right: 8px;"></i>Recent Class Attendance Log</h3>
+                    
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Period</th>
+                                    <th>Subject Code</th>
+                                    <th>Subject Name</th>
+                                    <th>Faculty</th>
+                                    <th>Status</th>
+                                    <th>Remarks</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbl-history-attendance">
+                                <tr><td colspan="7" style="text-align: center; color: var(--text-secondary);">Loading class logs...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/config.js"></script>
+    <script>
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme') || 'dark';
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('sms-theme', next);
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const session = await checkSession('STUDENT');
+            if (!session) return;
+
+            try {
+                const res = await apiCall('student/attendance.php');
+                if (res.success && res.data) {
+                    const ov = res.data.overall;
+                    document.getElementById('att-ov-pct').textContent = `${ov.percentage}%`;
+                    document.getElementById('att-ov-eligibility').textContent = ov.eligibility;
+                    document.getElementById('att-ov-eligibility').style.color = ov.percentage >= 75 ? '#10b981' : '#ef4444';
+                    document.getElementById('att-ov-total').textContent = ov.total_classes;
+                    document.getElementById('att-ov-attended').textContent = ov.attended_classes;
+                    document.getElementById('att-ov-absent').textContent = ov.absent_classes;
+
+                    // Subject table
+                    const subTbody = document.getElementById('tbl-subject-attendance');
+                    subTbody.innerHTML = '';
+                    (res.data.subjects || []).forEach(s => {
+                        const tr = document.createElement('tr');
+                        const isGood = s.percentage >= 75;
+                        tr.innerHTML = `
+                            <td><strong>${s.subject_code}</strong></td>
+                            <td>${s.subject_name}</td>
+                            <td>${s.total_classes}</td>
+                            <td style="color: #10b981; font-weight: 600;">${s.attended}</td>
+                            <td style="color: #ef4444; font-weight: 600;">${s.absent}</td>
+                            <td><strong style="color: ${isGood ? '#10b981' : '#ef4444'}; font-size: 14px;">${s.percentage}%</strong></td>
+                            <td style="width: 140px;">
+                                <div style="width: 100%; height: 8px; background: var(--bg-tertiary); border-radius: 4px; overflow: hidden;">
+                                    <div style="width: ${s.percentage}%; height: 100%; background: ${isGood ? '#10b981' : '#ef4444'}; border-radius: 4px;"></div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge badge-${isGood ? 'success' : 'danger'}">
+                                    ${isGood ? 'Eligible' : 'Shortage'}
+                                </span>
+                            </td>
+                        `;
+                        subTbody.appendChild(tr);
+                    });
+
+                    // History table
+                    const histTbody = document.getElementById('tbl-history-attendance');
+                    histTbody.innerHTML = '';
+                    if (!res.data.history || res.data.history.length === 0) {
+                        histTbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-secondary);">No attendance sessions logged yet.</td></tr>`;
+                    } else {
+                        res.data.history.forEach(h => {
+                            const tr = document.createElement('tr');
+                            const isPres = h.status === 'Present';
+                            tr.innerHTML = `
+                                <td>${h.date}</td>
+                                <td>Period ${h.period}</td>
+                                <td><strong>${h.subject_code}</strong></td>
+                                <td>${h.subject_name}</td>
+                                <td>${h.faculty_name}</td>
+                                <td>
+                                    <span class="badge badge-${isPres ? 'success' : 'danger'}">
+                                        <i class="fa-solid ${isPres ? 'fa-check' : 'fa-xmark'}"></i> ${h.status}
+                                    </span>
+                                </td>
+                                <td style="color: var(--text-secondary); font-size: 12px;">${h.remarks || '-'}</td>
+                            `;
+                            histTbody.appendChild(tr);
+                        });
+                    }
+                }
+            } catch (err) {
+                console.error("Attendance load failed:", err);
+            }
+        });
+    </script>
+</body>
+</html>

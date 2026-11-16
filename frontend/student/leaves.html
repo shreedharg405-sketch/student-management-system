@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leave History - Student Management System</title>
+    <!-- Google Fonts & Font Awesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Preserved Stylesheets -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/tables.css">
+    <link rel="stylesheet" href="../css/forms.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <style>
+        .badge-status {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .badge-pending {
+            background-color: rgba(245, 158, 11, 0.15);
+            color: #d97706;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        .badge-approved {
+            background-color: rgba(16, 185, 129, 0.15);
+            color: #059669;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .badge-rejected {
+            background-color: rgba(239, 68, 68, 0.15);
+            color: #dc2626;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="app-sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <span>STUDENTMS</span>
+                </div>
+            </div>
+
+            <div class="sidebar-user-card" style="padding: 16px 20px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px;">
+                <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #6366f1, #a855f7); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 16px;">
+                    <i class="fa-solid fa-user-graduate"></i>
+                </div>
+                <div style="overflow: hidden;">
+                    <div class="js-user-name" style="font-weight: 700; font-size: 14px; color: var(--text-primary); white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">Loading...</div>
+                    <div class="js-user-role" style="font-size: 11px; color: var(--accent-color); font-weight: 600; text-transform: uppercase;">STUDENT</div>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section-title">ACADEMIC MENU</div>
+                <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+                <a href="profile.html" class="nav-item"><i class="fa-solid fa-id-card"></i> My Profile</a>
+                <a href="attendance.html" class="nav-item"><i class="fa-solid fa-chart-pie"></i> Attendance</a>
+                <a href="timetable.html" class="nav-item"><i class="fa-solid fa-calendar-week"></i> Timetable</a>
+                <a href="exams.html" class="nav-item"><i class="fa-solid fa-file-pen"></i> Exam Schedule</a>
+
+                <div class="nav-section-title">LEAVE & REQUESTS</div>
+                <a href="leave.html" class="nav-item"><i class="fa-solid fa-paper-plane"></i> Apply Leave</a>
+                <a href="leaves.html" class="nav-item active"><i class="fa-solid fa-clock-rotate-left"></i> Leave History</a>
+
+                <div class="nav-section-title">SESSION</div>
+                <a href="javascript:void(0)" onclick="logout()" class="nav-item text-danger"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Header Bar -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="btn-icon" id="menu-toggle-btn"><i class="fa-solid fa-bars"></i></button>
+                    <h1 class="page-title">Leave History & Review Status</h1>
+                </div>
+                <div class="topbar-right">
+                    <a href="leave.html" class="btn btn-primary btn-sm" style="text-decoration: none;">
+                        <i class="fa-solid fa-plus"></i> New Leave Request
+                    </a>
+                    <button class="btn-icon" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button>
+                    <button class="btn btn-outline btn-sm" onclick="logout()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</button>
+                </div>
+            </header>
+
+            <div class="content-body">
+                <div class="card" style="padding: 24px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3 style="font-size: 16px; font-weight: 700; margin: 0; color: var(--text-primary);">
+                            <i class="fa-solid fa-clock-rotate-left" style="color: var(--accent-color); margin-right: 8px;"></i>
+                            Submitted Applications
+                        </h3>
+                        <span id="leave-count-badge" class="badge badge-success">0 Applications</span>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Applied On</th>
+                                    <th>Leave Type</th>
+                                    <th>Duration</th>
+                                    <th>Reason</th>
+                                    <th>Status</th>
+                                    <th>Mentor / HOD Remarks</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbl-student-leaves">
+                                <tr><td colspan="6" style="text-align: center; color: var(--text-secondary); padding: 24px;">Loading leave history...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/config.js"></script>
+    <script>
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme') || 'dark';
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('sms-theme', next);
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const session = await checkSession('STUDENT');
+            if (!session) return;
+
+            try {
+                const res = await apiCall('student/leaves.php');
+                const tbody = document.getElementById('tbl-student-leaves');
+                const leaves = Array.isArray(res) ? res : (res.data || res.leaves || []);
+
+                if (leaves && leaves.length > 0) {
+                    document.getElementById('leave-count-badge').textContent = `${leaves.length} Applications`;
+                    tbody.innerHTML = leaves.map(l => {
+                        let badgeClass = 'badge-pending';
+                        let statusLabel = l.status;
+                        if (l.status === 'PENDING_MENTOR') {
+                            badgeClass = 'badge-pending';
+                            statusLabel = 'Pending with Mentor';
+                        } else if (l.status === 'PENDING_HOD') {
+                            badgeClass = 'badge-pending';
+                            statusLabel = 'Mentor Approved (Pending HOD)';
+                        } else if (l.status === 'HOD_APPROVED') {
+                            badgeClass = 'badge-approved';
+                            statusLabel = 'Approved by HOD';
+                        } else if (l.status.includes('REJECTED')) {
+                            badgeClass = 'badge-rejected';
+                            statusLabel = l.status.replace('_', ' ');
+                        }
+
+                        const reviewHtml = (l.responses && l.responses.length > 0)
+                            ? l.responses.map(r => `<div style="font-size: 11px; margin-top: 4px;"><strong>${r.stage}:</strong> ${r.action} by ${r.responder_name} (${r.remarks || 'No remarks'})</div>`).join('')
+                            : '<span style="font-size: 11px; color: var(--text-secondary);">Awaiting review</span>';
+
+                        return `
+                            <tr>
+                                <td>${l.created_at}</td>
+                                <td><span class="badge-status badge-pending">${l.leave_type}</span></td>
+                                <td><strong>${l.from_date}</strong> &rarr; <strong>${l.to_date}</strong> (${l.duration_days || 1} day${(l.duration_days || 1) > 1 ? 's' : ''})</td>
+                                <td>${l.reason}</td>
+                                <td><span class="badge-status ${badgeClass}">${statusLabel}</span></td>
+                                <td>${reviewHtml}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    document.getElementById('leave-count-badge').textContent = '0 Applications';
+                    tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-secondary); padding: 24px;">No leave applications found.</td></tr>`;
+                }
+            } catch (err) {
+                console.error("Leaves load failed:", err);
+            }
+        });
+    </script>
+</body>
+</html>
+

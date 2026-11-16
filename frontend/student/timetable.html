@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Timetable - Student Management System</title>
+    <!-- Google Fonts & Font Awesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Preserved Stylesheets -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/tables.css">
+    <link rel="stylesheet" href="../css/forms.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <style>
+        .tab-day-btn {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            padding: 8px 18px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all var(--transition-fast);
+        }
+        .tab-day-btn.active {
+            background: var(--accent-color);
+            color: #ffffff;
+            border-color: var(--accent-color);
+        }
+        .slot-card {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+        .slot-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="app-sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <span>STUDENTMS</span>
+                </div>
+            </div>
+
+            <div class="sidebar-user-card" style="padding: 16px 20px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px;">
+                <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #6366f1, #a855f7); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 16px;">
+                    <i class="fa-solid fa-user-graduate"></i>
+                </div>
+                <div style="overflow: hidden;">
+                    <div class="js-user-name" style="font-weight: 700; font-size: 14px; color: var(--text-primary); white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">Loading...</div>
+                    <div class="js-user-role" style="font-size: 11px; color: var(--accent-color); font-weight: 600; text-transform: uppercase;">STUDENT</div>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <div class="nav-section-title">ACADEMIC MENU</div>
+                <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+                <a href="profile.html" class="nav-item"><i class="fa-solid fa-id-card"></i> My Profile</a>
+                <a href="attendance.html" class="nav-item"><i class="fa-solid fa-chart-pie"></i> Attendance</a>
+                <a href="timetable.html" class="nav-item active"><i class="fa-solid fa-calendar-week"></i> Timetable</a>
+                <a href="exams.html" class="nav-item"><i class="fa-solid fa-file-pen"></i> Exam Schedule</a>
+
+                <div class="nav-section-title">LEAVE & REQUESTS</div>
+                <a href="leave.html" class="nav-item"><i class="fa-solid fa-paper-plane"></i> Apply Leave</a>
+                <a href="leaves.html" class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i> Leave History</a>
+
+                <div class="nav-section-title">SESSION</div>
+                <a href="javascript:void(0)" onclick="logout()" class="nav-item text-danger"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Header Bar -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="btn-icon" id="menu-toggle-btn"><i class="fa-solid fa-bars"></i></button>
+                    <h1 class="page-title">Weekly Class Timetable</h1>
+                </div>
+                <div class="topbar-right">
+                    <span style="font-size: 12px; color: var(--text-secondary); background: var(--bg-tertiary); padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border-color);">
+                        <i class="fa-solid fa-lock" style="color: var(--accent-color);"></i> Read-Only View
+                    </span>
+                    <button class="btn-icon" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button>
+                    <button class="btn btn-outline btn-sm" onclick="logout()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</button>
+                </div>
+            </header>
+
+            <div class="content-body">
+                <!-- Day Filter Tabs -->
+                <div class="card" style="padding: 16px 20px; margin-bottom: 22px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;" id="day-tabs-container">
+                        <button class="tab-day-btn active" onclick="filterDay('Monday', this)">Monday</button>
+                        <button class="tab-day-btn" onclick="filterDay('Tuesday', this)">Tuesday</button>
+                        <button class="tab-day-btn" onclick="filterDay('Wednesday', this)">Wednesday</button>
+                        <button class="tab-day-btn" onclick="filterDay('Thursday', this)">Thursday</button>
+                        <button class="tab-day-btn" onclick="filterDay('Friday', this)">Friday</button>
+                        <button class="tab-day-btn" onclick="filterDay('Saturday', this)">Saturday</button>
+                    </div>
+                    <div style="font-size: 13px; color: var(--text-secondary);" id="active-day-heading">Showing Monday schedule</div>
+                </div>
+
+                <!-- Timetable Slot Cards -->
+                <div id="slots-grid-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; margin-bottom: 24px;">
+                    <div style="color: var(--text-secondary); font-size: 14px;">Loading timetable schedule...</div>
+                </div>
+
+                <!-- Full Weekly Table -->
+                <div class="card" style="padding: 24px;">
+                    <h3 style="font-size: 16px; font-weight: 700; margin: 0 0 16px 0; color: var(--text-primary);"><i class="fa-solid fa-table-cells" style="color: var(--accent-color); margin-right: 8px;"></i>Full Weekly Grid</h3>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Day</th>
+                                    <th>Period</th>
+                                    <th>Time</th>
+                                    <th>Subject Code</th>
+                                    <th>Subject Name</th>
+                                    <th>Faculty</th>
+                                    <th>Room</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbl-full-timetable">
+                                <tr><td colspan="7" style="text-align: center; color: var(--text-secondary);">Loading full timetable...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/config.js"></script>
+    <script>
+        let timetableData = null;
+        let selectedDay = 'Monday';
+
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute('data-theme') || 'dark';
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('sms-theme', next);
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const session = await checkSession('STUDENT');
+            if (!session) return;
+
+            // Automatically pick today's weekday if valid
+            const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+            if (['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].includes(today)) {
+                selectedDay = today;
+                document.querySelectorAll('.tab-day-btn').forEach(btn => {
+                    if (btn.textContent.trim() === today) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+            }
+
+            loadTimetable();
+        });
+
+        async function loadTimetable() {
+            try {
+                const res = await apiCall('student/timetable.php');
+                if (res.success && res.data) {
+                    timetableData = res.data;
+                    renderDaySlots(selectedDay);
+                    renderFullTable(res.data.all_slots || []);
+                }
+            } catch (err) {
+                console.error("Timetable load failed:", err);
+            }
+        }
+
+        function filterDay(day, btnEl) {
+            selectedDay = day;
+            document.querySelectorAll('.tab-day-btn').forEach(b => b.classList.remove('active'));
+            btnEl.classList.add('active');
+            document.getElementById('active-day-heading').textContent = `Showing ${day} schedule`;
+            renderDaySlots(day);
+        }
+
+        function renderDaySlots(day) {
+            const container = document.getElementById('slots-grid-container');
+            container.innerHTML = '';
+
+            const daySlots = (timetableData && timetableData.schedule && timetableData.schedule[day]) || [];
+
+            if (daySlots.length === 0) {
+                container.innerHTML = `
+                    <div style="grid-column: 1 / -1; padding: 32px; text-align: center; background: var(--bg-tertiary); border-radius: var(--radius-md); border: 1px dashed var(--border-color); color: var(--text-secondary);">
+                        <i class="fa-solid fa-mug-hot" style="font-size: 32px; color: var(--accent-color); margin-bottom: 10px;"></i>
+                        <p style="margin: 0; font-weight: 600;">No scheduled classes for ${day}. Enjoy your study break!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            daySlots.forEach(s => {
+                const card = document.createElement('div');
+                card.className = 'slot-card';
+                card.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span class="badge" style="background: rgba(99, 102, 241, 0.2); color: #818cf8; font-weight: 700;">PERIOD ${s.period}</span>
+                        <span style="font-size: 12px; color: var(--text-secondary);"><i class="fa-solid fa-clock"></i> ${s.start_time} - ${s.end_time}</span>
+                    </div>
+                    <div style="font-size: 16px; font-weight: 800; color: var(--text-primary);">${s.subject_name}</div>
+                    <div style="font-size: 12px; color: var(--accent-color); font-weight: 600;">Code: ${s.subject_code}</div>
+                    <div style="border-top: 1px solid var(--border-color); padding-top: 8px; margin-top: 4px; display: flex; justify-content: space-between; font-size: 12px; color: var(--text-secondary);">
+                        <span><i class="fa-solid fa-user-tie"></i> ${s.faculty_name}</span>
+                        <span style="font-weight: 600; color: var(--text-primary);"><i class="fa-solid fa-location-dot"></i> ${s.room}</span>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function renderFullTable(slots) {
+            const tbody = document.getElementById('tbl-full-timetable');
+            tbody.innerHTML = '';
+            if (slots.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color: var(--text-secondary);">No slots available.</td></tr>`;
+                return;
+            }
+            slots.forEach(s => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${s.day}</strong></td>
+                    <td>Period ${s.period}</td>
+                    <td>${s.start_time} - ${s.end_time}</td>
+                    <td><strong>${s.subject_code}</strong></td>
+                    <td>${s.subject_name}</td>
+                    <td>${s.faculty_name}</td>
+                    <td><span class="badge" style="background: var(--bg-tertiary); color: var(--text-primary);">${s.room}</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+    </script>
+</body>
+</html>

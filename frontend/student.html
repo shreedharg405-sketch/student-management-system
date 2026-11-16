@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Portal - Academic Dashboard</title>
+    <!-- Google Font Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS Modules -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/tables.css">
+    <link rel="stylesheet" href="css/forms.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <style>
+        .badge-status {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .badge-pending {
+            background-color: rgba(245, 158, 11, 0.15);
+            color: #d97706;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        .badge-approved {
+            background-color: rgba(16, 185, 129, 0.15);
+            color: #059669;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .badge-rejected {
+            background-color: rgba(239, 68, 68, 0.15);
+            color: #dc2626;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        .profile-field-box {
+            background-color: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+        }
+        .profile-field-box label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            display: block;
+            margin-bottom: 4px;
+        }
+        .profile-field-box span {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .tab-day-btn {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            padding: 8px 18px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all var(--transition-fast);
+        }
+        .tab-day-btn.active {
+            background: var(--accent-color);
+            color: #ffffff;
+            border-color: var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Network Loader overlay -->
+    <div class="network-status-pill hidden" id="network-status-pill">
+        <div class="network-spinner"></div>
+        <span id="network-status-text">Loading...</span>
+    </div>
+
+    <!-- Main Screen Container -->
+    <div class="app-container" id="app-screen">
+        
+        <!-- Sidebar Navigation Drawer -->
+        <aside class="sidebar" id="app-sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <span>STUDENTMS</span>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="nav-item active" id="nav-item-dash" data-view="dashboard">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        <span>Dashboard</span>
+                    </li>
+                    <li class="nav-item" id="nav-item-profile" data-view="profile">
+                        <i class="fa-solid fa-id-badge"></i>
+                        <span>My Profile</span>
+                    </li>
+                    <li class="nav-item" id="nav-item-att" data-view="attendance">
+                        <i class="fa-solid fa-calendar-check"></i>
+                        <span>My Attendance</span>
+                    </li>
+                    <li class="nav-item" id="nav-item-time" data-view="timetable">
+                        <i class="fa-solid fa-clock"></i>
+                        <span>Timetable</span>
+                    </li>
+                    <li class="nav-item" id="nav-item-exams" data-view="exams">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        <span>Exam Schedule</span>
+                    </li>
+                    <li class="nav-item" id="nav-item-leave-apply" data-view="apply-leave">
+                        <i class="fa-solid fa-file-signature"></i>
+                        <span>Leave Request</span>
+                    </li>
+                    <li class="nav-item" id="nav-item-leave-hist" data-view="leave-history">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                        <span>Leave History</span>
+                    </li>
+                    <li class="nav-item" id="nav-item-notices" data-view="notices">
+                        <i class="fa-solid fa-bullhorn"></i>
+                        <span>Notices</span>
+                    </li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <li class="nav-item" id="nav-sign-out" onclick="logout()" style="list-style: none; padding: 12px 16px; margin: 0 16px; border-radius: var(--radius-sm); display: flex; align-items: center; gap: 12px; color: var(--danger); cursor: pointer; font-size: 14px; font-weight: 600; transition: all var(--transition-fast);">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </li>
+            </div>
+        </aside>
+
+        <!-- Right Side Main Content Window -->
+        <main class="main-content">
+            
+            <!-- Top Action Header -->
+            <header class="app-header">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <button class="menu-toggle" id="menu-toggle-btn">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div>
+                        <h1 class="header-title" id="view-title">Dashboard</h1>
+                        <p class="header-subtitle" id="view-path-subtitle">Welcome to your Student Portal</p>
+                    </div>
+                </div>
+                
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="display: flex; align-items: center; gap: 10px; background: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 6px 14px; border-radius: 9999px;">
+                        <i class="fa-solid fa-graduation-cap" style="color: var(--accent-color); font-size: 14px;"></i>
+                        <span class="user-name" id="header-user-name" style="font-size: 13px; font-weight: 700; color: var(--text-primary);">Student</span>
+                        <span class="user-role badge" style="background: rgba(99, 102, 241, 0.15); color: #818cf8; font-size: 10px; padding: 2px 8px; font-weight: 700;">STUDENT</span>
+                    </div>
+                    <button class="btn-icon" id="header-theme-toggle" onclick="toggleTheme()" title="Toggle Theme"><i class="fa-solid fa-moon"></i></button>
+                    <button class="btn btn-outline btn-sm" onclick="logout()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</button>
+                </div>
+            </header>
+
+            <!-- Scrollable Dynamic Viewport -->
+            <div class="app-viewport">
+
+                <!-- VIEW 1: DASHBOARD -->
+                <section class="content-view active" id="view-dashboard">
+                    <!-- Welcome Card with Student Academic Details -->
+                    <div class="welcome-card">
+                        <div>
+                            <h2>Welcome, <span id="dash-welcome-name">Student</span>! 👋</h2>
+                            <p id="view-path-subtitle">Access your academic records, attendance stats, and exam schedule.</p>
+                        </div>
+                                <p style="font-size: 13px; color: var(--text-secondary);">
+                                    Department of <span id="dash-dept-name" style="font-weight: 600; color: var(--text-primary);">ECE</span> &bull; 
+                                    <span id="dash-year-sec">3rd Year, Section A</span>
+                                </p>
+                            </div>
+                            <div style="display: flex; gap: 12px; font-size: 12px; background: var(--bg-secondary); padding: 8px 16px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+                                <div><strong style="color: var(--text-secondary);">Register No:</strong> <span id="dash-reg-no" style="font-weight: 700; color: var(--accent-color);">21EC001</span></div>
+                                <div><strong style="color: var(--text-secondary);">Batch:</strong> <span id="dash-batch" style="font-weight: 700;">Batch 1</span></div>
+                            </div>
+                        </div>
+
+                        <!-- Mentor & HOD Info Bar -->
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 16px;">
+                            <div>
+                                <span style="font-size: 11px; text-transform: uppercase; color: var(--text-secondary); font-weight: 700;">Assigned Mentor</span>
+                                <div style="font-size: 14px; font-weight: 600; color: var(--text-primary);" id="dash-mentor-name">Prof. Sarah Jenkins</div>
+                            </div>
+                            <div>
+                                <span style="font-size: 11px; text-transform: uppercase; color: var(--text-secondary); font-weight: 700;">Head of Department (HOD)</span>
+                                <div style="font-size: 14px; font-weight: 600; color: var(--text-primary);" id="dash-hod-name">Dr. R. K. Sharma</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4 Metric Cards -->
+                    <div class="stats-grid mb-4">
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">
+                                <i class="fa-solid fa-chart-line"></i>
+                            </div>
+                            <div class="stat-meta">
+                                <span class="stat-label">Attendance %</span>
+                                <h3 class="stat-value" id="card-attendance-pct">--%</h3>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: rgba(59, 130, 246, 0.15); color: #3b82f6;">
+                                <i class="fa-solid fa-clock"></i>
+                            </div>
+                            <div class="stat-meta">
+                                <span class="stat-label">Next Class</span>
+                                <h3 class="stat-value" id="card-next-class" style="font-size: 14px; line-height: 1.3;">Loading...</h3>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;">
+                                <i class="fa-solid fa-file-pen"></i>
+                            </div>
+                            <div class="stat-meta">
+                                <span class="stat-label">Upcoming Exam</span>
+                                <h3 class="stat-value" id="card-upcoming-exam" style="font-size: 14px; line-height: 1.3;">Loading...</h3>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: rgba(239, 68, 68, 0.15); color: #ef4444;">
+                                <i class="fa-solid fa-hourglass-half"></i>
+                            </div>
+                            <div class="stat-meta">
+                                <span class="stat-label">Pending Leaves</span>
+                                <h3 class="stat-value" id="card-pending-leaves">0</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Links Section -->
+                    <div class="card">
+                        <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 16px; color: var(--text-primary);">Quick Actions</h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px;">
+                            <button class="btn btn-secondary" onclick="switchView('attendance')">
+                                <i class="fa-solid fa-calendar-check" style="color: var(--accent-color);"></i>
+                                View Attendance
+                            </button>
+                            <button class="btn btn-secondary" onclick="switchView('timetable')">
+                                <i class="fa-solid fa-clock" style="color: #3b82f6;"></i>
+                                View Timetable
+                            </button>
+                            <button class="btn btn-secondary" onclick="switchView('exams')">
+                                <i class="fa-solid fa-calendar-days" style="color: #10b981;"></i>
+                                View Exam Schedule
+                            </button>
+                            <button class="btn btn-primary" onclick="switchView('apply-leave')">
+                                <i class="fa-solid fa-file-signature"></i>
+                                Apply Leave
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW 2: MY PROFILE (READ ONLY) -->
+                <section class="content-view" id="view-profile">
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 16px;">
+                            <div>
+                                <h2 style="font-size: 18px; font-weight: 800; color: var(--text-primary);">Academic Profile</h2>
+                                <p style="font-size: 13px; color: var(--text-secondary);">Official enrolled student credentials & departmental records</p>
+                            </div>
+                            <span class="badge-status badge-approved">
+                                <i class="fa-solid fa-lock" style="margin-right: 4px;"></i> Read Only
+                            </span>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px;">
+                            <div class="profile-field-box">
+                                <label>Student Name</label>
+                                <span id="prof-name">--</span>
+                            </div>
+                            <div class="profile-field-box">
+                                <label>Register Number</label>
+                                <span id="prof-reg-no">--</span>
+                            </div>
+                            <div class="profile-field-box">
+                                <label>Email Address</label>
+                                <span id="prof-email">--</span>
+                            </div>
+                            <div class="profile-field-box">
+                                <label>Phone</label>
+                                <span id="prof-phone">--</span>
+                            </div>
+                            <div class="profile-field-box">
+                                <label>Date of Birth</label>
+                                <span id="prof-dob">--</span>
+                            </div>
+                            <div class="profile-field-box">
+                                <label>Gender</label>
+                                <span id="prof-gender">--</span>
+                            </div>
+                            <div class="profile-field-box">
+                                <label>Department</label>
+                                <span id="prof-dept">--</span>
+                            </div>
+                            <div class="profile-field-box">
+                                <label>Course</label>
+                                <span id="prof-course">--</span>
+                            </div>
+                            <div class="profile-field-box">
+                                <label>Year & Section</label>
+                                <span id="prof-year-sec">--</span>
+                            </div>
+                            <div class="profile-field-box">
+                                <label>Batch</label>
+                                <span id="prof-batch">--</span>
+                            </div>
+                            <div class="profile-field-box">
+                                <label>Assigned Mentor</label>
+                                <span id="prof-mentor">--</span>
+                            </div>
+                            <div class="profile-field-box">
+                                <label>Head of Department (HOD)</label>
+                                <span id="prof-hod">--</span>
+                            </div>
+                        </div>
+
+                        <div class="profile-field-box" style="margin-top: 16px;">
+                            <label>Campus Residential Address</label>
+                            <span id="prof-address">--</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW 3: MY ATTENDANCE (READ ONLY) -->
+                <section class="content-view" id="view-attendance">
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <div>
+                                <h2 style="font-size: 18px; font-weight: 800; color: var(--text-primary);">Subject-Wise Attendance</h2>
+                                <p style="font-size: 13px; color: var(--text-secondary);">Verified class session attendance records for current semester</p>
+                            </div>
+                            <div style="text-align: right;">
+                                <span style="font-size: 11px; text-transform: uppercase; color: var(--text-secondary); font-weight: 700;">Overall Aggregate</span>
+                                <div style="font-size: 22px; font-weight: 800; color: var(--accent-color);" id="att-aggregate-pct">--%</div>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table" id="student-attendance-table">
+                                <thead>
+                                    <tr>
+                                        <th>Subject</th>
+                                        <th>Faculty</th>
+                                        <th style="text-align: center;">Total Classes</th>
+                                        <th style="text-align: center;">Present</th>
+                                        <th style="text-align: center;">Absent</th>
+                                        <th style="text-align: center;">Percentage</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="student-attendance-tbody">
+                                    <tr><td colspan="6" style="text-align: center; padding: 24px;">Loading attendance records...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW 4: TIMETABLE (READ ONLY) -->
+                <section class="content-view" id="view-timetable">
+                    <div class="card">
+                        <div style="margin-bottom: 20px;">
+                            <h2 style="font-size: 18px; font-weight: 800; color: var(--text-primary);">Weekly Academic Timetable</h2>
+                            <p style="font-size: 13px; color: var(--text-secondary);">Scheduled class periods by day and room (Read Only)</p>
+                        </div>
+
+                        <!-- Day Switcher Tabs -->
+                        <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 12px; margin-bottom: 16px;" id="timetable-day-tabs">
+                            <button class="tab-day-btn active" onclick="filterTimetableDay('Monday')">Monday</button>
+                            <button class="tab-day-btn" onclick="filterTimetableDay('Tuesday')">Tuesday</button>
+                            <button class="tab-day-btn" onclick="filterTimetableDay('Wednesday')">Wednesday</button>
+                            <button class="tab-day-btn" onclick="filterTimetableDay('Thursday')">Thursday</button>
+                            <button class="tab-day-btn" onclick="filterTimetableDay('Friday')">Friday</button>
+                            <button class="tab-day-btn" onclick="filterTimetableDay('Saturday')">Saturday</button>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Period</th>
+                                        <th>Time Slot</th>
+                                        <th>Subject</th>
+                                        <th>Code</th>
+                                        <th>Faculty</th>
+                                        <th>Room</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="student-timetable-tbody">
+                                    <tr><td colspan="6" style="text-align: center; padding: 24px;">Loading timetable...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW 5: EXAM SCHEDULE (READ ONLY) -->
+                <section class="content-view" id="view-exams">
+                    <div class="card">
+                        <div style="margin-bottom: 20px;">
+                            <h2 style="font-size: 18px; font-weight: 800; color: var(--text-primary);">Official Examination Schedule</h2>
+                            <p style="font-size: 13px; color: var(--text-secondary);">Internal assessments and semester examinations</p>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Exam Name</th>
+                                        <th>Type</th>
+                                        <th>Subject</th>
+                                        <th>Code</th>
+                                        <th>Date</th>
+                                        <th>Timing</th>
+                                        <th>Hall / Room</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="student-exams-tbody">
+                                    <tr><td colspan="7" style="text-align: center; padding: 24px;">Loading examination schedules...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW 6: APPLY LEAVE REQUEST -->
+                <section class="content-view" id="view-apply-leave">
+                    <div class="card" style="max-width: 680px; margin: 0 auto;">
+                        <div style="margin-bottom: 24px; border-bottom: 1px solid var(--border-color); padding-bottom: 16px;">
+                            <h2 style="font-size: 18px; font-weight: 800; color: var(--text-primary);">Apply for Academic Leave</h2>
+                            <p style="font-size: 13px; color: var(--text-secondary);">Leaves undergo two-tier review: Assigned Mentor &rarr; Department HOD.</p>
+                        </div>
+
+                        <form id="student-leave-form" style="display: flex; flex-direction: column; gap: 16px;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                                <div class="form-group">
+                                    <label style="font-size: 12px; font-weight: 600; margin-bottom: 6px; display: block;">From Date</label>
+                                    <input type="date" id="leave-from-date" class="form-control" required style="width: 100%; padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary);">
+                                </div>
+                                <div class="form-group">
+                                    <label style="font-size: 12px; font-weight: 600; margin-bottom: 6px; display: block;">To Date</label>
+                                    <input type="date" id="leave-to-date" class="form-control" required style="width: 100%; padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary);">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label style="font-size: 12px; font-weight: 600; margin-bottom: 6px; display: block;">Leave Type</label>
+                                <select id="leave-type" class="form-control" style="width: 100%; padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary);">
+                                    <option value="Medical">Medical Leave</option>
+                                    <option value="Casual">Casual / Personal</option>
+                                    <option value="Academic">Academic / Conference</option>
+                                    <option value="Emergency">Emergency</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label style="font-size: 12px; font-weight: 600; margin-bottom: 6px; display: block;">Reason / Justification</label>
+                                <textarea id="leave-reason" rows="4" class="form-control" placeholder="Please provide specific reason for leave application..." required style="width: 100%; padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--bg-secondary); color: var(--text-primary);"></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary" id="btn-submit-leave" style="padding: 12px; font-weight: 700; margin-top: 8px;">
+                                <i class="fa-solid fa-paper-plane"></i>
+                                Submit Leave Request
+                            </button>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- VIEW 7: LEAVE HISTORY & APPROVAL TIMELINE -->
+                <section class="content-view" id="view-leave-history">
+                    <div class="card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <div>
+                                <h2 style="font-size: 18px; font-weight: 800; color: var(--text-primary);">Leave Request History</h2>
+                                <p style="font-size: 13px; color: var(--text-secondary);">Real-time approval workflow tracking (Mentor &rarr; HOD)</p>
+                            </div>
+                            <button class="btn btn-sm btn-primary" onclick="switchView('apply-leave')">
+                                <i class="fa-solid fa-plus"></i> New Request
+                            </button>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Date Submitted</th>
+                                        <th>Type</th>
+                                        <th>Duration</th>
+                                        <th>Reason</th>
+                                        <th>Current Status</th>
+                                        <th>Review Timeline</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="student-leaves-tbody">
+                                    <tr><td colspan="6" style="text-align: center; padding: 24px;">Loading leave applications...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEW 8: NOTICES -->
+                <section class="content-view" id="view-notices">
+                    <div class="card">
+                        <div style="margin-bottom: 20px;">
+                            <h2 style="font-size: 18px; font-weight: 800; color: var(--text-primary);">Departmental Circulars & Notices</h2>
+                            <p style="font-size: 13px; color: var(--text-secondary);">Official announcements from college administration and HOD</p>
+                        </div>
+
+                        <div style="display: flex; flex-direction: column; gap: 14px;">
+                            <div class="card" style="border-left: 4px solid var(--accent-color); background: var(--bg-tertiary);">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                    <h4 style="font-size: 15px; font-weight: 700; color: var(--text-primary);">Mid-Term Assessment Schedule Released</h4>
+                                    <span style="font-size: 11px; color: var(--text-secondary);">Published 2 days ago</span>
+                                </div>
+                                <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.5;">
+                                    All 3rd Year ECE students are hereby instructed to review their Mid Term Assessment Schedule under the Exam Schedule tab. Hall tickets will be verified at the entrance.
+                                </p>
+                            </div>
+
+                            <div class="card" style="border-left: 4px solid #3b82f6; background: var(--bg-tertiary);">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                    <h4 style="font-size: 15px; font-weight: 700; color: var(--text-primary);">Mandatory 75% Attendance Requirement</h4>
+                                    <span style="font-size: 11px; color: var(--text-secondary);">Academic Notice</span>
+                                </div>
+                                <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.5;">
+                                    Students falling below 75% attendance in any subject will require explicit HOD condonation to appear for the end-semester examinations.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script>
+        // Enforce role guard: Only STUDENT role allowed
+        const currentUser = protectPortal(["STUDENT"]);
+        if (!currentUser) {
+            // Already redirected by protectPortal
+        }
+
+        // View Navigation
+        const navItems = document.querySelectorAll('.sidebar-nav .nav-item');
+        const contentViews = document.querySelectorAll('.content-view');
+        const viewTitle = document.getElementById('view-title');
+
+        window.switchView = function(viewId) {
+            navItems.forEach(item => {
+                item.classList.toggle('active', item.getAttribute('data-view') === viewId);
+            });
+            contentViews.forEach(view => {
+                view.classList.toggle('active', view.id === `view-${viewId}`);
+            });
+
+            const titles = {
+                'dashboard': 'Dashboard',
+                'profile': 'My Profile',
+                'attendance': 'My Attendance',
+                'timetable': 'My Timetable',
+                'exams': 'Exam Schedule',
+                'apply-leave': 'Apply Leave',
+                'leave-history': 'Leave History',
+                'notices': 'Notices'
+            };
+            if (viewTitle) viewTitle.textContent = titles[viewId] || 'Student Portal';
+        };
+
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const targetView = item.getAttribute('data-view');
+                if (targetView) switchView(targetView);
+            });
+        });
+
+        // Toggle Sidebar Mobile
+        const menuToggleBtn = document.getElementById('menu-toggle-btn');
+        const appSidebar = document.getElementById('app-sidebar');
+        if (menuToggleBtn && appSidebar) {
+            menuToggleBtn.addEventListener('click', () => {
+                appSidebar.classList.toggle('open');
+            });
+        }
+
+        // State cache for timetable
+        let cachedTimetable = [];
+        let activeTimetableDay = "Monday";
+
+        // Load Student Data
+        async function loadStudentData() {
+            try {
+                // 1. Dashboard data
+                const dashRes = await apiCall('/api/student/dashboard');
+                const dash = dashRes.data || dashRes;
+                if (dash && (dash.student_info || (dash.data && dash.data.student_info))) {
+                    const info = dash.student_info || dash.data.student_info;
+                    const cards = dash.cards || dash.data.cards || {};
+
+                    document.getElementById('header-user-name').textContent = info.name;
+                    const avEl = document.getElementById('header-user-avatar');
+                    if (avEl) avEl.textContent = info.name.charAt(0).toUpperCase();
+                    document.getElementById('dash-welcome-name').textContent = info.name;
+                    document.getElementById('dash-dept-name').textContent = info.department;
+                    document.getElementById('dash-year-sec').textContent = `${info.year}, Section ${info.section}`;
+                    document.getElementById('dash-reg-no').textContent = info.register_number;
+                    document.getElementById('dash-batch').textContent = info.batch;
+                    document.getElementById('dash-mentor-name').textContent = info.mentor;
+                    document.getElementById('dash-hod-name').textContent = info.hod;
+
+                    document.getElementById('card-attendance-pct').textContent = `${cards.attendance_pct || 100}%`;
+                    document.getElementById('card-next-class').textContent = cards.next_class || 'None today';
+                    document.getElementById('card-upcoming-exam').textContent = cards.upcoming_exam || 'None scheduled';
+                    document.getElementById('card-pending-leaves').textContent = cards.pending_leaves || '0 Pending';
+                }
+
+                // 2. Profile data
+                const profRes = await apiCall('/api/student/profile');
+                const prof = profRes.data || profRes;
+                if (prof) {
+                    const pName = prof.name || prof.student_name || '';
+                    document.getElementById('prof-name').textContent = pName;
+                    document.getElementById('prof-reg-no').textContent = prof.register_number || '';
+                    document.getElementById('prof-email').textContent = prof.email || prof.student_email || '';
+                    document.getElementById('prof-phone').textContent = prof.phone || '';
+                    document.getElementById('prof-dob').textContent = prof.dob || '';
+                    document.getElementById('prof-gender').textContent = prof.gender || '';
+                    document.getElementById('prof-dept').textContent = prof.department || prof.department_name || '';
+                    document.getElementById('prof-course').textContent = prof.course || prof.course_name || '';
+                    document.getElementById('prof-year-sec').textContent = `${prof.year || ''}, Section ${prof.section || ''}`;
+                    document.getElementById('prof-batch').textContent = prof.batch || prof.batch_name || '';
+                    document.getElementById('prof-mentor').textContent = `${prof.mentor_name || 'Assigned'} (${prof.mentor_email || ''})`;
+                    document.getElementById('prof-hod').textContent = prof.hod_name || 'HOD';
+                    document.getElementById('prof-address').textContent = prof.address || '';
+                }
+
+                // 3. Attendance data
+                const attRes = await apiCall('/api/student/attendance');
+                const att = attRes.data || attRes;
+                const subjects = att.subjects || (att.data && att.data.subjects) || [];
+                const overall = att.overall || (att.data && att.data.overall) || {};
+                const overallPct = att.overall_percentage !== undefined ? att.overall_percentage : (overall.percentage || 100);
+
+                document.getElementById('att-aggregate-pct').textContent = `${overallPct}%`;
+                const tbody = document.getElementById('student-attendance-tbody');
+                tbody.innerHTML = subjects.map(s => `
+                    <tr>
+                        <td>
+                            <div style="font-weight: 700; color: var(--text-primary);">${s.subject_name}</div>
+                            <div style="font-size: 11px; color: var(--text-secondary);">${s.subject_code}</div>
+                        </td>
+                        <td>${s.faculty_name || 'Faculty'}</td>
+                        <td style="text-align: center; font-weight: 600;">${s.total_classes}</td>
+                        <td style="text-align: center; font-weight: 600; color: #10b981;">${s.present !== undefined ? s.present : s.attended}</td>
+                        <td style="text-align: center; font-weight: 600; color: #ef4444;">${s.absent}</td>
+                        <td style="text-align: center;">
+                            <span class="badge-status ${s.percentage >= 75 ? 'badge-approved' : 'badge-rejected'}">
+                                ${s.percentage}%
+                            </span>
+                        </td>
+                    </tr>
+                `).join('');
+
+                // 4. Timetable data
+                const ttRes = await apiCall('/api/student/timetable');
+                cachedTimetable = Array.isArray(ttRes) ? ttRes : ((ttRes.data && (ttRes.data.all_slots || ttRes.data)) || ttRes.all_slots || ttRes.timetable || []);
+                renderTimetable();
+
+                // 5. Exams data
+                const exRes = await apiCall('/api/student/exams');
+                const exams = Array.isArray(exRes) ? exRes : (exRes.data || exRes.exams || []);
+                const examsTbody = document.getElementById('student-exams-tbody');
+                if (exams.length === 0) {
+                    examsTbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 20px;">No scheduled examinations at this time.</td></tr>`;
+                } else {
+                    examsTbody.innerHTML = exams.map(e => `
+                        <tr>
+                            <td style="font-weight: 700; color: var(--text-primary);">${e.exam_name}</td>
+                            <td><span class="badge-status ${e.exam_type === 'Semester' ? 'badge-approved' : 'badge-pending'}">${e.exam_type}</span></td>
+                            <td>${e.subject_name}</td>
+                            <td><code>${e.subject_code}</code></td>
+                            <td style="font-weight: 600;">${e.date}</td>
+                            <td>${e.start_time} - ${e.end_time}</td>
+                            <td><span style="font-weight: 600; color: var(--accent-color);">${e.room}</span></td>
+                        </tr>
+                    `).join('');
+                }
+
+                // 6. Leave history
+                loadLeaveHistory();
+
+            } catch (err) {
+                console.error("loadStudentData error:", err);
+                showToast(err.message, "error");
+            }
+        }
+
+        window.filterTimetableDay = function(day) {
+            activeTimetableDay = day;
+            document.querySelectorAll('#timetable-day-tabs .tab-day-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.textContent.trim() === day);
+            });
+            renderTimetable();
+        };
+
+        function renderTimetable() {
+            const tbody = document.getElementById('student-timetable-tbody');
+            const daySlots = cachedTimetable.filter(s => s.day === activeTimetableDay);
+            if (daySlots.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 24px; color: var(--text-secondary);">No periods scheduled for ${activeTimetableDay}.</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = daySlots.map(s => `
+                <tr>
+                    <td style="font-weight: 700; text-align: center;">Period ${s.period}</td>
+                    <td><i class="fa-regular fa-clock" style="margin-right: 6px; color: var(--text-secondary);"></i>${s.start_time} - ${s.end_time}</td>
+                    <td style="font-weight: 700; color: var(--text-primary);">${s.subject_name}</td>
+                    <td><code>${s.subject_code}</code></td>
+                    <td>${s.faculty_name}</td>
+                    <td><span style="font-weight: 600; color: var(--accent-color);">${s.room}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        async function loadLeaveHistory() {
+            try {
+                const lvRes = await apiCall('/api/student/leaves');
+                const leaves = Array.isArray(lvRes) ? lvRes : (lvRes.data || lvRes.leaves || []);
+                const tbody = document.getElementById('student-leaves-tbody');
+                if (leaves.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 24px; color: var(--text-secondary);">No leave applications submitted yet.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = leaves.map(l => {
+                    let badgeClass = 'badge-pending';
+                    let statusLabel = l.status;
+                    if (l.status === 'PENDING_MENTOR') {
+                        badgeClass = 'badge-pending';
+                        statusLabel = 'Pending with Mentor';
+                    } else if (l.status === 'PENDING_HOD') {
+                        badgeClass = 'badge-pending';
+                        statusLabel = 'Mentor Approved (Pending HOD)';
+                    } else if (l.status === 'HOD_APPROVED') {
+                        badgeClass = 'badge-approved';
+                        statusLabel = 'Approved by HOD';
+                    } else if (l.status.includes('REJECTED')) {
+                        badgeClass = 'badge-rejected';
+                        statusLabel = l.status.replace('_', ' ');
+                    }
+
+                    const reviewHtml = l.responses.length > 0 
+                        ? l.responses.map(r => `<div style="font-size: 11px; margin-top: 4px;"><strong>${r.stage}:</strong> ${r.action} by ${r.responder_name} (${r.remarks || 'No remarks'})</div>`).join('')
+                        : '<span style="font-size: 11px; color: var(--text-secondary);">Awaiting initial review</span>';
+
+                    return `
+                        <tr>
+                            <td>${l.created_at}</td>
+                            <td><span class="badge-status badge-pending">${l.leave_type}</span></td>
+                            <td>${l.from_date} &rarr; ${l.to_date}</td>
+                            <td>${l.reason}</td>
+                            <td><span class="badge-status ${badgeClass}">${statusLabel}</span></td>
+                            <td>${reviewHtml}</td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        // Leave Submission
+        const leaveForm = document.getElementById('student-leave-form');
+        leaveForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const fromDate = document.getElementById('leave-from-date').value;
+            const toDate = document.getElementById('leave-to-date').value;
+            const leaveType = document.getElementById('leave-type').value;
+            const reason = document.getElementById('leave-reason').value.trim();
+
+            if (!fromDate || !toDate || !reason) {
+                showToast("Please fill in all leave request fields.", "warning");
+                return;
+            }
+
+            try {
+                const res = await apiCall('/api/student/leave', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        from_date: fromDate,
+                        to_date: toDate,
+                        leave_type: leaveType,
+                        reason: reason
+                    })
+                });
+
+                if (res.success) {
+                    showToast("Leave request submitted! Status: PENDING WITH MENTOR", "success");
+                    leaveForm.reset();
+                    loadLeaveHistory();
+                    switchView('leave-history');
+                }
+            } catch (err) {
+                showToast(err.message, "error");
+            }
+        });
+
+        // Initialize view
+        document.addEventListener('DOMContentLoaded', async () => {
+            switchView('dashboard');
+            try {
+                await checkSession('STUDENT');
+            } catch (e) {}
+            loadStudentData();
+        });
+    </script>
+</body>
+</html>
